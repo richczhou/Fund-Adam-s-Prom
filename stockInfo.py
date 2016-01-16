@@ -6,7 +6,7 @@ import urllib.request, datetime, xml.etree.ElementTree as ET
 class getStocks:
     """Gets the stock data from Yahoo! Finance."""
 
-    startYear = 1970  #this is as far back as data goes (exclusive)
+    startYear = 2015  #this is as far back as data goes (exclusive)
     #note that in url1 one can replace the * with specific info one desires (date, closing price, etc.)
     url1 = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22"
     url2 = "%22%20and%20startDate%20%3D%20%22"
@@ -68,7 +68,17 @@ class getStocks:
 
 
 testing = getStocks()
-testing.getData()
+#making primary folder if it doesn't exist
+#os.makedirs("/stockInfo", exist_ok=True)
+file = open("tickers.txt", "r") #opens the file
+ticks = []    #holds the names
+for name in file:
+    ticks.append(name[:-1])   #add names to array omitting the newline
+file.close()
 
-for i in range(len(testing.parsed)):
-    print(str(testing.parsed[i][0]) + "     Closing Price: " + str(testing.parsed[i][1]))
+for i in ticks:   #get data for each name
+    testing.giveName(i)
+    testing.getData()
+    #store?
+
+
