@@ -3,7 +3,8 @@ WIP
 
 Currently has progams to:	
 -parse stock data	
--format output
+-format output  
+-write parsed info to file
 
 
 
