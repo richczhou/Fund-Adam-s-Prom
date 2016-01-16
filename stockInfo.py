@@ -1,12 +1,12 @@
 ##By Adam Chang, Richard Zhou, and Victor Zhou
 ##Fetches stock prices for a company I guess
 
-import urllib.request, datetime, xml.etree.ElementTree as ET
+import urllib.request, os, datetime, xml.etree.ElementTree as ET
 
 class getStocks:
     """Gets the stock data from Yahoo! Finance."""
 
-    startYear = 2015  #this is as far back as data goes (exclusive)
+    startYear = 1970  #this is as far back as data goes (exclusive)
     #note that in url1 one can replace the * with specific info one desires (date, closing price, etc.)
     url1 = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22"
     url2 = "%22%20and%20startDate%20%3D%20%22"
@@ -60,17 +60,22 @@ class getStocks:
             
             #getting every day's info
             for k in range(len(stockData[0])):
+                #gonna clean up the date
+                stockDate = str(stockData[0][k][0].text)
+                stockDate = stockDate.replace('-','')
+                
                 #add a list containing the date and stock closing price
-                self.parsed.append(list([str(stockData[0][k][0].text), float(stockData[0][k][4].text)]))
+                self.parsed.append(list([str(stockDate), float(stockData[0][k][4].text)]))
 
 
 #############| TESTING |####################
 
 
 testing = getStocks()
-#making primary folder if it doesn't exist
-#os.makedirs("/stockInfo", exist_ok=True)
+#making primary folder if it doesn't exist and select it
+os.makedirs("stockData", exist_ok=True)
 file = open("tickers.txt", "r") #opens the file
+
 ticks = []    #holds the names
 for name in file:
     ticks.append(name[:-1])   #add names to array omitting the newline
@@ -79,6 +84,11 @@ file.close()
 for i in ticks:   #get data for each name
     testing.giveName(i)
     testing.getData()
-    #store?
-
-
+    
+    #store the files
+    os.makedirs(str("stockData/" + i), exist_ok=True)
+    writeData = open(str("stockData/" + i + "/px.csv"), "w")
+    for j in testing.parsed:
+        writeData.write(str(j[0] + ',' + str(j[1]) + '\n'))
+    writeData.close()
+    
