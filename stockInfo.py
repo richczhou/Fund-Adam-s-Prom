@@ -78,7 +78,10 @@ file = open("tickers.txt", "r") #opens the file
 
 ticks = []    #holds the names
 for name in file:
-    ticks.append(name[:-1])   #add names to array omitting the newline
+    if name[-1] == "\n":
+        ticks.append(name[:-1])   #add names to array omitting the newline
+    else:
+        ticks.append(name)
 file.close()
 
 for i in ticks:   #get data for each name
@@ -92,3 +95,5 @@ for i in ticks:   #get data for each name
         writeData.write(str(j[0] + ',' + str(j[1]) + '\n'))
     writeData.close()
     
+
+
